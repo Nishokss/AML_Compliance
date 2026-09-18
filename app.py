@@ -1,6 +1,8 @@
 import hashlib
 import hmac
 import os
+import subprocess
+import sys
 from pathlib import Path
 
 import streamlit as st
@@ -319,7 +321,18 @@ def main():
         st.info("Click **Run evaluation** below. A **PASS** means that feature is working as expected; the final pass rate shows the overall result.")
         if st.button("Run evaluation", type="primary"):
             st.markdown("**Evaluation results**")
-            st.code(__import__("subprocess").check_output(["python", "evaluation/evaluate.py"], text=True))
+            completed = subprocess.run(
+                [sys.executable, "evaluation/evaluate.py"],
+                capture_output=True,
+                text=True,
+                cwd=Path(__file__).resolve().parent,
+            )
+            output = completed.stdout
+            if completed.stderr:
+                output += f"\n{completed.stderr}"
+            st.code(output or "Evaluation finished without output.")
+            if completed.returncode:
+                st.error(f"Evaluation could not complete (exit code {completed.returncode}). Check the details above.")
     else:
         st.header("Audit logs"); st.dataframe(rows(connection, "SELECT username, role, action, resource, access_decision, timestamp FROM audit_logs ORDER BY id DESC LIMIT 100"), use_container_width=True)
 
