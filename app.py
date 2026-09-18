@@ -20,6 +20,7 @@ from rag.vector_store import build_index
 from security.authentication import authenticate
 from security.rbac import access, customer_in_scope, protect_customer_record
 
+
 def apply_theme():
     st.markdown("""
     <style>
@@ -325,6 +326,7 @@ def main():
                 capture_output=True,
                 text=True,
                 cwd=Path(__file__).resolve().parent,
+                check=False,
             )
             output = completed.stdout
             if completed.stderr:
