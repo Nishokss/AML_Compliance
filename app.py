@@ -20,8 +20,6 @@ from rag.vector_store import build_index
 from security.authentication import authenticate
 from security.rbac import access, customer_in_scope, protect_customer_record
 
-st.set_page_config(page_title="AML Compliance Assistant", page_icon="A", layout="wide")
-
 def apply_theme():
     st.markdown("""
     <style>
@@ -178,6 +176,7 @@ def customer_response(question, user, role, connection):
     return {"answer": "Customer details retrieved." if permitted else "ACCESS DENIED", "customer": safe, "access_decision": "ALLOWED" if permitted else "DENIED"}
 
 def main():
+    st.set_page_config(page_title="AML Compliance Assistant", page_icon="A", layout="wide")
     apply_theme()
     connection = get_db()
     if "user" not in st.session_state:
